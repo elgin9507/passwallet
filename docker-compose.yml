@@ -1,0 +1,35 @@
+version: '3.5'
+
+services:
+
+  postgres:
+    container_name: passwallet_db
+    image: postgres:13
+    env_file: .env.docker
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - passwallet-network
+
+  web:
+    container_name: passwallet_backend
+    build: .
+    env_file: .env.docker
+    ports:
+      - 8000:8000
+    depends_on:
+      - postgres
+    networks:
+      - passwallet-network
+
+volumes:
+    db-volume:
+        name: passwallet-db-volume
+
+networks:
+  passwallet-network:
+    external: false
+    name: passwallet-network
+
